@@ -1,0 +1,6 @@
+{
+  "name": "Academic Intelligence",
+  "description": "Enterprise academic management workspace for campus administrators, faculty, and bursars.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

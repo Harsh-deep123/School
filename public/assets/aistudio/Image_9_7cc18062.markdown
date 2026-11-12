@@ -1,0 +1,230 @@
+---
+name: Academic Intelligence
+colors:
+  surface: '#f8f9ff'
+  surface-dim: '#cbdbf5'
+  surface-bright: '#f8f9ff'
+  surface-container-lowest: '#ffffff'
+  surface-container-low: '#eff4ff'
+  surface-container: '#e5eeff'
+  surface-container-high: '#dce9ff'
+  surface-container-highest: '#d3e4fe'
+  on-surface: '#0b1c30'
+  on-surface-variant: '#434655'
+  inverse-surface: '#213145'
+  inverse-on-surface: '#eaf1ff'
+  outline: '#737686'
+  outline-variant: '#c3c6d7'
+  surface-tint: '#0053db'
+  primary: '#004ac6'
+  on-primary: '#ffffff'
+  primary-container: '#2563eb'
+  on-primary-container: '#eeefff'
+  inverse-primary: '#b4c5ff'
+  secondary: '#565e74'
+  on-secondary: '#ffffff'
+  secondary-container: '#dae2fd'
+  on-secondary-container: '#5c647a'
+  tertiary: '#005a82'
+  on-tertiary: '#ffffff'
+  tertiary-container: '#0074a6'
+  on-tertiary-container: '#e4f2ff'
+  error: '#ba1a1a'
+  on-error: '#ffffff'
+  error-container: '#ffdad6'
+  on-error-container: '#93000a'
+  primary-fixed: '#dbe1ff'
+  primary-fixed-dim: '#b4c5ff'
+  on-primary-fixed: '#00174b'
+  on-primary-fixed-variant: '#003ea8'
+  secondary-fixed: '#dae2fd'
+  secondary-fixed-dim: '#bec6e0'
+  on-secondary-fixed: '#131b2e'
+  on-secondary-fixed-variant: '#3f465c'
+  tertiary-fixed: '#c9e6ff'
+  tertiary-fixed-dim: '#89ceff'
+  on-tertiary-fixed: '#001e2f'
+  on-tertiary-fixed-variant: '#004c6e'
+  background: '#f8f9ff'
+  on-background: '#0b1c30'
+  surface-variant: '#d3e4fe'
+typography:
+  display-lg:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 3rem
+    fontWeight: '700'
+    lineHeight: 3.5rem
+    letterSpacing: -0.025em
+  display-lg-mobile:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 2.25rem
+    fontWeight: '700'
+    lineHeight: 2.75rem
+    letterSpacing: -0.02em
+  headline-lg:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 2rem
+    fontWeight: '700'
+    lineHeight: 2.5rem
+    letterSpacing: -0.02em
+  headline-lg-mobile:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1.5rem
+    fontWeight: '600'
+    lineHeight: 2rem
+    letterSpacing: -0.015em
+  headline-md:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1.5rem
+    fontWeight: '600'
+    lineHeight: 2rem
+    letterSpacing: -0.015em
+  headline-sm:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1.25rem
+    fontWeight: '600'
+    lineHeight: 1.75rem
+    letterSpacing: -0.01em
+  title-md:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1rem
+    fontWeight: '600'
+    lineHeight: 1.5rem
+    letterSpacing: -0.005em
+  body-lg:
+    fontFamily: Inter
+    fontSize: 1.125rem
+    fontWeight: '400'
+    lineHeight: 1.75rem
+  body-md:
+    fontFamily: Inter
+    fontSize: 0.875rem
+    fontWeight: '400'
+    lineHeight: 1.375rem
+  body-sm:
+    fontFamily: Inter
+    fontSize: 0.75rem
+    fontWeight: '400'
+    lineHeight: 1.125rem
+  label-lg:
+    fontFamily: Inter
+    fontSize: 0.875rem
+    fontWeight: '600'
+    lineHeight: 1.25rem
+    letterSpacing: 0.01em
+  label-md:
+    fontFamily: Inter
+    fontSize: 0.75rem
+    fontWeight: '600'
+    lineHeight: 1rem
+    letterSpacing: 0.02em
+  label-sm:
+    fontFamily: Inter
+    fontSize: 0.6875rem
+    fontWeight: '600'
+    lineHeight: 0.875rem
+    letterSpacing: 0.03em
+rounded:
+  sm: 0.25rem
+  DEFAULT: 0.5rem
+  md: 0.75rem
+  lg: 1rem
+  xl: 1.5rem
+  full: 9999px
+spacing:
+  gutter: 1.5rem
+  gutter-mobile: 1rem
+  margin: 2rem
+  margin-mobile: 1rem
+  space-xs: 0.25rem
+  space-sm: 0.5rem
+  space-md: 1rem
+  space-lg: 1.5rem
+  space-xl: 2rem
+---
+
+## Brand & Style
+
+This design system establishes an authoritative, crystal-clear, and frictionless workspace for enterprise academic management. Designed for educational directors, campus administrators, faculty, and bursars, the interface projects composure, computational precision, and modern accessibility.
+
+The aesthetic fuses **Corporate / Modern SaaS** rigor with subtle **Tactile & Glass-tinted** details. By pairing airy slate canvases with high-contrast navy anchoring, vibrant royal blue active states, and unambiguous status semantics, dense institutional records transform into actionable operational dashboards. The emotional tone evokes calm mastery, structural integrity, and institutional trust.
+
+## Colors
+
+The palette is engineered around clean clinical legibility and intuitive operational status:
+
+- **Primary (`#2563eb`) & Primary Dark (`#1d4ed8`)**: Drives directional momentum—used for core calls-to-action, active navigation tabs, selected states, and interactive focal points.
+- **Deep Slate/Navy (`#0f172a` / `#1e293b`)**: Serves as the anchor for persistent chrome (navigation sidebars, top headers) and critical high-hierarchy typography.
+- **Vibrant Sky (`#0ea5e9`)**: Acts as a modern tertiary accent for live progress indicators, dynamic timeline highlights, and informational data visualizations.
+- **Functional Semantics**:
+  - **Emerald (`#10b981`)**: Signals "Paid", "Present", "On Schedule", or operational clearance.
+  - **Amber (`#f59e0b`)**: Marks "Pending Approval", "On Leave", or time-sensitive administrative reviews.
+  - **Rose (`#f43f5e`)**: Expresses "Unpaid", "Absent", "Critical At-Risk", or strict operational alerts.
+- **Backgrounds & Canvases**: Base canvas utilizes crisp white (`#ffffff`) paired with soft light slate (`#f8fafc` and `#f1f5f9`), separated by calibrated hairline dividers (`#e2e8f0`).
+
+## Typography
+
+The dual typographic system splits responsibilities between display charisma and data utility:
+
+- **Display & Headings (Plus Jakarta Sans)**: Imparts a contemporary, sculpted posture to executive summaries, student metrics, and module banners. Features slight negative tracking for tight optical density.
+- **Body, Form, & Tabular Data (Inter)**: Carries standard prose, field entries, system logs, and microcopy. Its balanced x-height ensures faultless vertical scanning in dense 50-row grade rosters and fiscal spreadsheets.
+- **Tabular Numerics**: Tabular lining figures (`font-variant-numeric: tabular-nums`) must be explicitly enforced across all ledger columns, attendance percentages, and currency metrics.
+
+## Layout & Spacing
+
+The layout operates on a flexible, responsive 12-column system designed to adapt from expansive command centers down to single-column handheld operations:
+
+- **Desktop (1024px+)**: 12-column fluid grid bound inside a maximum container width of `1600px` with persistent collapsible left-rail navigation (`280px` expanded / `72px` rail icon mode). Gutters are locked at `1.5rem` (`24px`).
+- **Tablet (768px - 1023px)**: 8-column layout. Navigation shifts to an off-canvas drawer or top toolbar. Gutters condense to `1.25rem` (`20px`).
+- **Mobile (< 768px)**: 4-column flow. Stat clusters collapse into 2x2 grids or swipeable horizontal carousels; data tables convert into vertical card-based records. Margins and gutters scale to `1rem` (`16px`).
+- **Vertical Rhythm**: Layout gaps adhere strictly to the 4px/8px modular base scale (`space-xs` through `space-xl`).
+
+## Elevation & Depth
+
+Visual hierarchy uses crisp boundaries combined with diffused, low-opacity ambient drop shadows tinted with deep slate (`rgba(15, 23, 42, ...)`):
+
+- **Level 0 (Flat / Canvas)**: Background workspace surfaces (`#f8fafc`). No elevation; delineated by hairline borders (`#e2e8f0`).
+- **Level 1 (Cards & Data Panels)**: Surface containers utilize pure white (`#ffffff`), `border: 1px solid #e2e8f0`, and `box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05)`.
+- **Level 2 (Interactive Hover & Quick-Action Cards)**: Applied to clickable cards, stats on hover, and active table rows: `box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05)`.
+- **Level 3 (Flyouts, Popovers, & Dropdowns)**: Floating contextual tools and filter panels: `box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04)`.
+- **Level 4 (Modals & Critical Sheets)**: Centered dialogs and enrollment wizards over a tinted backdrop overlay (`rgba(15, 23, 42, 0.4)` backdrop blur `4px`): `box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04)`.
+
+## Shapes
+
+The interface balances soft friendliness with structured professionalism:
+
+- **Base Curvature**: The design system sets base roundedness to `2` (`0.5rem` / `8px`) for standard controls including inputs, buttons, and tab switchers.
+- **Card Containers & Modules (`rounded-2xl`)**: Sectional blocks, analytical metric cards, and charts use an expanded `1rem` (`16px`) radius (`rounded-lg` relative token) to impart an approachable, modern SaaS feel.
+- **Badges, Tags, & Avatars**: Status indicators and operational chips strictly feature full continuous curvature (`rounded-full` / pill shapes) to distinctively separate status signals from rectangular structural content.
+
+## Components
+
+### Buttons
+- **Primary**: Solid royal blue (`#2563eb`) with white text, font weight `600`, subtle inset highlight, hovering to `#1d4ed8`. Height: `40px` (desktop), `44px` (mobile touch target).
+- **Secondary**: Crisp white background with neutral border (`#e2e8f0`), text `#1e293b`. Hover: `#f8fafc` with border `#cbd5e1`.
+- **Destructive**: Rose background (`#f43f5e`), white text, hovering to `#e11d48`.
+
+### Status Badges & Chips
+- Designed with soft pill silhouettes (`rounded-full`), `space-xs` vertical and `space-sm` horizontal padding, paired with a matching `6px` solid indicator dot:
+  - **Paid / Present**: Emerald tint background (`rgba(16, 185, 129, 0.12)`), text `#047857`.
+  - **Pending / Leave**: Amber tint background (`rgba(245, 158, 11, 0.14)`), text `#b45309`.
+  - **Unpaid / Absent**: Rose tint background (`rgba(244, 63, 94, 0.12)`), text `#be123c`.
+  - **Informational / Enrolled**: Sky tint background (`rgba(14, 165, 233, 0.12)`), text `#0369a1`.
+
+### Metric & Quick-Action Cards
+- Built inside white `rounded-2xl` containers framed by `1px solid #e2e8f0`.
+- Includes an upper micro-label, high-contrast headline numerical value (`Plus Jakarta Sans`), inline delta trend indicator (percentage badge with up/down micro-arrow), and quick-action utility trigger button in the card header.
+
+### Form Inputs & Selectors
+- Standard height `40px` with `#ffffff` fill, `#e2e8f0` border, `rounded-md` (8px).
+- Placeholder text in `#94a3b8`.
+- Focus state: Border transitions to `#2563eb` with a 3px ambient focus ring (`rgba(37, 99, 235, 0.15)`).
+
+### Data Tables
+- Header: `#f8fafc` background, uppercase `label-sm` labels in `#64748b`, bordered bottom by `#e2e8f0`.
+- Rows: White background, alternating hover to `#f8fafc`, `48px` minimum height, cell padding `space-md`. Numeric cells right-aligned with tabular figures.
+- Inline actions: Revealed via sticky right column with ghost icon buttons.
+
+### Checkboxes & Radios
+- `18px` by `18px` square (`rounded` 4px for checkboxes, `rounded-full` for radios).
+- Inactive: `#ffffff` with `#cbd5e1` outline. Active: Solid `#2563eb` fill with white checkmark or dot.
