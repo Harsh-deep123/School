@@ -21,9 +21,9 @@ export function ResilientImage({
       <div
         role="img"
         aria-label={alt}
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#004ac6] text-white/90 p-6 ${className}`}
+        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#0c3b2e] via-[#164a3a] to-[#0b6b4c] text-white/90 p-6 ${className}`}
       >
-        <Building2 className="w-8 h-8 mb-2 text-[#89ceff]" />
+        <Building2 className="w-8 h-8 mb-2 text-[#9bb5a8]" />
         <span className="font-display text-sm font-semibold text-center">
           {fallbackTitle || alt}
         </span>

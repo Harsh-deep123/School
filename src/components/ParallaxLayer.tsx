@@ -53,7 +53,7 @@ export function ParallaxBanner({
   return (
     <section
       ref={targetRef}
-      className={`relative overflow-hidden rounded-2xl border border-[#e2e8f0] bg-[#0f172a] ${heightClass}`}
+      className={`relative overflow-hidden rounded-2xl border border-[#d5e2db] bg-[#0c3b2e] ${heightClass}`}
     >
       <motion.div
         style={{ y, scale }}
@@ -70,7 +70,7 @@ export function ParallaxBanner({
       {/* Measured contrast scrim for WCAG AA legibility */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/92 via-[#0f172a]/72 to-[#0f172a]/38 pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-r from-[#0c3b2e]/92 via-[#0c3b2e]/72 to-[#0c3b2e]/38 pointer-events-none"
       />
 
       {/* Subtle architectural parallax layer */}

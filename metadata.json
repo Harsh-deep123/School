@@ -1,6 +1,6 @@
 {
-  "name": "Academic Intelligence",
-  "description": "Enterprise academic management workspace for campus administrators, faculty, and bursars.",
+  "name": "Aryavarta Institute of Technology",
+  "description": "AICTE college management ERP for admissions, attendance, fee collection, faculty and campus operations.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

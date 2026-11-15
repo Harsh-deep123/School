@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useMemo, useState, FormEvent } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AcademicDivision, StudentRecord } from '../data/academicData';
@@ -6,29 +6,69 @@ import { AcademicDivision, StudentRecord } from '../data/academicData';
 interface EnrollStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEnroll: (student: Omit<StudentRecord, 'id'>, tuitionAmount: number) => void;
+  onEnroll: (
+    student: Omit<StudentRecord, 'id'>,
+    tuitionAmount: number,
+  ) => void | Promise<void>;
+}
+
+interface CourseOption {
+  label: string;
+  /** Fixed total course fee (all semesters combined) */
+  totalFee: number;
+  creditsTarget: number;
+  /** How many semesters this course has */
+  semesters: number;
 }
 
 const DIVISIONS: AcademicDivision[] = [
-  'Applied Engineering',
-  'Quantitative Economics',
-  'Natural Sciences',
-  'Humanities & Law',
+  'Computer Science & Engg.',
+  'Electronics & Communication',
+  'Mechanical Engineering',
+  'Business Administration',
 ];
 
-const DEFAULT_PROGRAMS: Record<AcademicDivision, string> = {
-  'Applied Engineering': 'B.S. Mechatronics & Robotics',
-  'Quantitative Economics': 'B.A. Econometrics & Policy',
-  'Natural Sciences': 'B.S. Applied Photonics',
-  'Humanities & Law': 'B.A. Constitutional History',
+const DEPARTMENT_COURSES: Record<AcademicDivision, CourseOption[]> = {
+  'Computer Science & Engg.': [
+    { label: 'B.Tech CSE', totalFee: 1000000, creditsTarget: 160, semesters: 8 },
+    { label: 'BCA', totalFee: 390000, creditsTarget: 120, semesters: 6 },
+    { label: 'MCA', totalFee: 340000, creditsTarget: 80, semesters: 4 },
+    { label: 'M.Tech CSE', totalFee: 380000, creditsTarget: 80, semesters: 4 },
+  ],
+  'Electronics & Communication': [
+    { label: 'B.Tech ECE', totalFee: 960000, creditsTarget: 160, semesters: 8 },
+    { label: 'M.Tech ECE', totalFee: 360000, creditsTarget: 80, semesters: 4 },
+  ],
+  'Mechanical Engineering': [
+    { label: 'B.Tech ME', totalFee: 920000, creditsTarget: 160, semesters: 8 },
+    { label: 'M.Tech ME', totalFee: 352000, creditsTarget: 80, semesters: 4 },
+  ],
+  'Business Administration': [
+    { label: 'BBA', totalFee: 468000, creditsTarget: 120, semesters: 6 },
+    { label: 'MBA', totalFee: 580000, creditsTarget: 80, semesters: 4 },
+  ],
 };
 
+const SEM_LABELS = [
+  'Sem I',
+  'Sem II',
+  'Sem III',
+  'Sem IV',
+  'Sem V',
+  'Sem VI',
+  'Sem VII',
+  'Sem VIII',
+];
+
 const ADVISORS: Record<AcademicDivision, string> = {
-  'Applied Engineering': 'Dr. Martin Keller',
-  'Quantitative Economics': 'Prof. Nadia Okafor',
-  'Natural Sciences': 'Dr. Kenji Takahashi',
-  'Humanities & Law': 'Prof. Eleanor Vance',
+  'Computer Science & Engg.': 'Dr. Kavita Mehra',
+  'Electronics & Communication': 'Prof. Suresh Iyer',
+  'Mechanical Engineering': 'Dr. Nalini Desai',
+  'Business Administration': 'Prof. Farida Khan',
 };
+
+const DEFAULT_DIVISION: AcademicDivision = 'Computer Science & Engg.';
+const DEFAULT_COURSE = DEPARTMENT_COURSES[DEFAULT_DIVISION][0];
 
 export function EnrollStudentModal({
   isOpen,
@@ -37,53 +77,85 @@ export function EnrollStudentModal({
 }: EnrollStudentModalProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [division, setDivision] = useState<AcademicDivision>('Applied Engineering');
-  const [program, setProgram] = useState(DEFAULT_PROGRAMS['Applied Engineering']);
-  const [cohort, setCohort] = useState('Class of 2029');
-  const [tuitionAmount, setTuitionAmount] = useState('18450');
+  const [phone, setPhone] = useState('');
+  const [division, setDivision] = useState<AcademicDivision>(DEFAULT_DIVISION);
+  const [course, setCourse] = useState(DEFAULT_COURSE.label);
+  const [semester, setSemester] = useState('Sem I');
+  const [cohort, setCohort] = useState('Batch 2025–29');
   const [error, setError] = useState('');
 
+  const courseOptions = DEPARTMENT_COURSES[division];
+  const selectedCourse =
+    courseOptions.find((opt) => opt.label === course) ?? courseOptions[0];
+
+  const semesterOptions = useMemo(
+    () => SEM_LABELS.slice(0, selectedCourse.semesters),
+    [selectedCourse.semesters],
+  );
+
+  /** Semester fee = total course fee ÷ number of semesters */
+  const semesterFee = Math.round(
+    selectedCourse.totalFee / selectedCourse.semesters,
+  );
+  const semesterFeeDisplay = `₹${semesterFee.toLocaleString('en-IN')} · ${semester}`;
+  const courseTotalDisplay = `₹${selectedCourse.totalFee.toLocaleString('en-IN')}`;
+
   const handleDivisionChange = (nextDivision: AcademicDivision) => {
+    const first = DEPARTMENT_COURSES[nextDivision][0];
     setDivision(nextDivision);
-    setProgram(DEFAULT_PROGRAMS[nextDivision]);
+    setCourse(first.label);
+    setSemester('Sem I');
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleCourseChange = (nextCourse: string) => {
+    const matched =
+      courseOptions.find((opt) => opt.label === nextCourse) ?? courseOptions[0];
+    setCourse(matched.label);
+    setSemester('Sem I');
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
-    const parsedTuition = Number(tuitionAmount);
+    const trimmedPhone = phone.trim();
+    const phoneDigits = trimmedPhone.replace(/\D/g, '');
 
     if (!trimmedName || !trimmedEmail.includes('@')) {
-      setError('Enter a valid student full name and institutional email address.');
+      setError('Enter a valid student name and email address.');
       return;
     }
 
-    if (Number.isNaN(parsedTuition) || parsedTuition < 0) {
-      setError('Enter a valid non-negative tuition assessment amount.');
+    if (phoneDigits.length < 10) {
+      setError('Enter a valid 10-digit phone number.');
       return;
     }
 
-    onEnroll(
+    await onEnroll(
       {
         name: trimmedName,
         email: trimmedEmail,
+        phone: trimmedPhone,
         division,
-        program: program.trim() || DEFAULT_PROGRAMS[division],
+        program: `${selectedCourse.label} · ${semester}`,
         cohort,
-        gpa: 3.5,
+        gpa: 0,
         creditsEarned: 0,
-        creditsTarget: 120,
+        creditsTarget: selectedCourse.creditsTarget,
         attendanceRate: 100,
-        tuitionBalance: parsedTuition,
+        tuitionBalance: semesterFee,
         status: 'Pending',
         advisor: ADVISORS[division],
       },
-      parsedTuition,
+      semesterFee,
     );
 
     setName('');
     setEmail('');
+    setPhone('');
+    setDivision(DEFAULT_DIVISION);
+    setCourse(DEFAULT_COURSE.label);
+    setSemester('Sem I');
     setError('');
     onClose();
   };
@@ -103,7 +175,7 @@ export function EnrollStudentModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#0f172a]/40 backdrop-blur-[4px]"
+            className="fixed inset-0 bg-[#0c3b2e]/40 backdrop-blur-[4px]"
           />
 
           <motion.div
@@ -111,25 +183,25 @@ export function EnrollStudentModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 w-full max-w-lg rounded-2xl bg-white border border-[#e2e8f0] shadow-[0_20px_25px_-5px_rgba(15,23,42,0.1),0_8px_10px_-6px_rgba(15,23,42,0.04)] overflow-hidden"
+            className="relative z-10 w-full max-w-lg rounded-2xl bg-white border border-[#d5e2db] shadow-[0_20px_25px_-5px_rgba(12,59,46,0.12),0_8px_10px_-6px_rgba(12,59,46,0.04)] overflow-hidden"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#e2e8f0]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#d5e2db]">
               <div>
                 <h2
                   id="enroll-modal-title"
-                  className="font-display text-lg font-semibold text-[#0b1c30]"
+                  className="font-display text-lg font-semibold text-[#12261f]"
                 >
-                  Enroll New Student
+                  New Student Admission
                 </h2>
-                <p className="text-xs text-[#434655] mt-0.5">
-                  Creates an academic directory record and Fall 2026 bursar assessment
+                <p className="text-xs text-[#3d5248] mt-0.5">
+                  Creates enrollment record and Odd Sem fee invoice
                 </p>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close enrollment dialog"
-                className="w-9 h-9 rounded-lg inline-flex items-center justify-center text-[#434655] hover:bg-[#eff4ff] hover:text-[#0b1c30] transition-colors"
+                aria-label="Close admission dialog"
+                className="w-9 h-9 rounded-lg inline-flex items-center justify-center text-[#3d5248] hover:bg-[#e7f0eb] hover:text-[#12261f] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -146,45 +218,63 @@ export function EnrollStudentModal({
                 <div>
                   <label
                     htmlFor="student-name"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Full Name
+                    Student Name
                   </label>
                   <input
                     id="student-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Elena Rostova"
-                    className="input-academic w-full px-3 text-sm text-[#0b1c30] placeholder:text-[#94a3b8]"
+                    placeholder="e.g. Diya Kapoor"
+                    className="input-academic w-full px-3 text-sm text-[#12261f] placeholder:text-[#94a8a0]"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="student-email"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Institutional Email
+                    Email
                   </label>
                   <input
                     id="student-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.rostova@aldervale.edu"
-                    className="input-academic w-full px-3 text-sm text-[#0b1c30] placeholder:text-[#94a3b8]"
+                    placeholder="diya.kapoor@ait.edu.in"
+                    className="input-academic w-full px-3 text-sm text-[#12261f] placeholder:text-[#94a8a0]"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="student-phone"
+                  className="block text-xs font-semibold text-[#12261f] mb-1.5"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="student-phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. 98765 43210"
+                  className="input-academic w-full px-3 text-sm text-[#12261f] placeholder:text-[#94a8a0]"
+                />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label
                     htmlFor="student-division"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Academic Division
+                    Department
                   </label>
                   <select
                     id="student-division"
@@ -192,7 +282,7 @@ export function EnrollStudentModal({
                     onChange={(e) =>
                       handleDivisionChange(e.target.value as AcademicDivision)
                     }
-                    className="input-academic w-full px-3 text-sm text-[#0b1c30]"
+                    className="input-academic w-full px-3 text-sm text-[#12261f]"
                   >
                     {DIVISIONS.map((div) => (
                       <option key={div} value={div}>
@@ -205,20 +295,20 @@ export function EnrollStudentModal({
                 <div>
                   <label
                     htmlFor="student-cohort"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Cohort
+                    Batch
                   </label>
                   <select
                     id="student-cohort"
                     value={cohort}
                     onChange={(e) => setCohort(e.target.value)}
-                    className="input-academic w-full px-3 text-sm text-[#0b1c30]"
+                    className="input-academic w-full px-3 text-sm text-[#12261f]"
                   >
-                    <option value="Class of 2029">Class of 2029</option>
-                    <option value="Class of 2028">Class of 2028</option>
-                    <option value="Class of 2027">Class of 2027</option>
-                    <option value="Graduate 2027">Graduate 2027</option>
+                    <option value="Batch 2025–29">Batch 2025–29</option>
+                    <option value="Batch 2024–28">Batch 2024–28</option>
+                    <option value="Batch 2023–27">Batch 2023–27</option>
+                    <option value="Batch 2024–26">Batch 2024–26 (MBA)</option>
                   </select>
                 </div>
               </div>
@@ -226,52 +316,94 @@ export function EnrollStudentModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="student-program"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    htmlFor="student-course"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Degree Program
+                    Course
+                  </label>
+                  <select
+                    id="student-course"
+                    value={course}
+                    onChange={(e) => handleCourseChange(e.target.value)}
+                    className="input-academic w-full px-3 text-sm text-[#12261f]"
+                  >
+                    {courseOptions.map((opt) => (
+                      <option key={opt.label} value={opt.label}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="student-semester"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
+                  >
+                    Semester
+                  </label>
+                  <select
+                    id="student-semester"
+                    value={semester}
+                    onChange={(e) => setSemester(e.target.value)}
+                    className="input-academic w-full px-3 text-sm text-[#12261f]"
+                  >
+                    {semesterOptions.map((sem) => (
+                      <option key={sem} value={sem}>
+                        {sem}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="tuition-amount"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
+                  >
+                    Semester Fee (₹)
                   </label>
                   <input
-                    id="student-program"
+                    id="tuition-amount"
                     type="text"
-                    value={program}
-                    onChange={(e) => setProgram(e.target.value)}
-                    className="input-academic w-full px-3 text-sm text-[#0b1c30]"
+                    readOnly
+                    value={semesterFeeDisplay}
+                    className="input-academic w-full px-3 text-sm font-mono tabular-nums text-[#12261f] bg-[#f5faf7]"
                   />
                 </div>
 
                 <div>
                   <label
-                    htmlFor="tuition-amount"
-                    className="block text-xs font-semibold text-[#0b1c30] mb-1.5"
+                    htmlFor="course-total-fee"
+                    className="block text-xs font-semibold text-[#12261f] mb-1.5"
                   >
-                    Term Tuition Assessment (USD)
+                    Course Total Fee (₹)
                   </label>
                   <input
-                    id="tuition-amount"
-                    type="number"
-                    min={0}
-                    step={50}
-                    value={tuitionAmount}
-                    onChange={(e) => setTuitionAmount(e.target.value)}
-                    className="input-academic w-full px-3 text-sm font-mono tabular-nums text-[#0b1c30]"
+                    id="course-total-fee"
+                    type="text"
+                    readOnly
+                    value={courseTotalDisplay}
+                    className="input-academic w-full px-3 text-sm font-mono tabular-nums text-[#12261f] bg-[#f5faf7]"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#e2e8f0] flex items-center justify-end gap-3">
+              <div className="pt-3 border-t border-[#d5e2db] flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="h-10 px-4 rounded-lg border border-[#e2e8f0] bg-white text-sm font-semibold text-[#1e293b] hover:bg-[#f8fafc] hover:border-[#cbd5e1] transition-colors whitespace-nowrap shrink-0"
+                  className="h-10 px-4 rounded-lg border border-[#d5e2db] bg-white text-sm font-semibold text-[#164a3a] hover:bg-[#f5faf7] hover:border-[#b7cfc3] transition-colors whitespace-nowrap shrink-0"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="h-10 px-5 rounded-lg bg-[#2563eb] text-sm font-semibold text-white hover:bg-[#1d4ed8] transition-colors whitespace-nowrap shrink-0"
+                  className="h-10 px-5 rounded-lg bg-[#0b6b4c] text-sm font-semibold text-white hover:bg-[#095a40] transition-colors whitespace-nowrap shrink-0"
                 >
-                  Confirm Enrollment
+                  Confirm Admission
                 </button>
               </div>
             </form>

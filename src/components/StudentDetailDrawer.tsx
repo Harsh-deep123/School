@@ -1,13 +1,16 @@
-import { X, Mail, BookOpen, UserCheck, CreditCard } from 'lucide-react';
+import { X, Mail, Phone, BookOpen, UserCheck, CreditCard } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { EnrollmentStatus, StudentRecord } from '../data/academicData';
+import { EnrollmentStatus, formatINR, StudentRecord } from '../data/academicData';
 import { StatusIndicator } from './StatusIndicator';
 
 interface StudentDetailDrawerProps {
   student: StudentRecord | null;
   onClose: () => void;
-  onUpdateStatus: (studentId: string, status: EnrollmentStatus) => void;
-  onClearBalance: (studentId: string) => void;
+  onUpdateStatus: (
+    studentId: string,
+    status: EnrollmentStatus,
+  ) => void | Promise<void>;
+  onClearBalance: (studentId: string) => void | Promise<void>;
 }
 
 export function StudentDetailDrawer({
@@ -35,7 +38,7 @@ export function StudentDetailDrawer({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#0f172a]/35 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-[#0c3b2e]/35 backdrop-blur-[2px]"
           />
 
           <motion.aside
@@ -43,20 +46,20 @@ export function StudentDetailDrawer({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 w-full max-w-md bg-white h-full border-l border-[#e2e8f0] shadow-[0_20px_25px_-5px_rgba(15,23,42,0.12)] flex flex-col"
+            className="relative z-10 w-full max-w-md bg-white h-full border-l border-[#d5e2db] shadow-[0_20px_25px_-5px_rgba(12,59,46,0.12)] flex flex-col"
           >
-            <div className="flex items-start justify-between px-6 py-5 border-b border-[#e2e8f0]">
+            <div className="flex items-start justify-between px-6 py-5 border-b border-[#d5e2db]">
               <div>
-                <p className="font-mono text-xs text-[#434655] tabular-nums">
+                <p className="font-mono text-xs text-[#3d5248] tabular-nums">
                   {student.id}
                 </p>
                 <h2
                   id="drawer-student-name"
-                  className="font-display text-xl font-bold text-[#0b1c30] mt-1"
+                  className="font-display text-xl font-bold text-[#12261f] mt-1"
                 >
                   {student.name}
                 </h2>
-                <div className="flex items-center gap-2 text-xs text-[#434655] mt-1">
+                <div className="flex items-center gap-2 text-xs text-[#3d5248] mt-1">
                   <span>{student.division}</span>
                   <span aria-hidden="true">·</span>
                   <span>{student.cohort}</span>
@@ -66,69 +69,75 @@ export function StudentDetailDrawer({
                 type="button"
                 onClick={onClose}
                 aria-label="Close student record"
-                className="w-9 h-9 rounded-lg inline-flex items-center justify-center text-[#434655] hover:bg-[#eff4ff] hover:text-[#0b1c30] transition-colors"
+                className="w-9 h-9 rounded-lg inline-flex items-center justify-center text-[#3d5248] hover:bg-[#e7f0eb] hover:text-[#12261f] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              <div className="flex items-center justify-between pb-5 border-b border-[#e2e8f0]">
+              <div className="flex items-center justify-between pb-5 border-b border-[#d5e2db]">
                 <div>
-                  <span className="text-xs font-medium text-[#434655] block mb-1">
-                    Academic Standing
+                  <span className="text-xs font-medium text-[#3d5248] block mb-1">
+                    Status
                   </span>
                   <StatusIndicator status={student.status} />
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-medium text-[#434655] block mb-1">
-                    Cumulative GPA
+                  <span className="text-xs font-medium text-[#3d5248] block mb-1">
+                    CGPA
                   </span>
-                  <span className="font-display text-2xl font-bold text-[#0b1c30] tabular-nums">
+                  <span className="font-display text-2xl font-bold text-[#12261f] tabular-nums">
                     {student.gpa.toFixed(2)}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-2.5 text-sm text-[#434655]">
-                  <Mail className="w-4 h-4 text-[#737686] shrink-0" />
+                <div className="flex items-center gap-2.5 text-sm text-[#3d5248]">
+                  <Mail className="w-4 h-4 text-[#6b8578] shrink-0" />
                   <span>{student.email}</span>
                 </div>
-                <div className="flex items-center gap-2.5 text-sm text-[#434655]">
-                  <BookOpen className="w-4 h-4 text-[#737686] shrink-0" />
+                {student.phone && (
+                  <div className="flex items-center gap-2.5 text-sm text-[#3d5248]">
+                    <Phone className="w-4 h-4 text-[#6b8578] shrink-0" />
+                    <span className="font-mono tabular-nums">{student.phone}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2.5 text-sm text-[#3d5248]">
+                  <BookOpen className="w-4 h-4 text-[#6b8578] shrink-0" />
                   <span>{student.program}</span>
                 </div>
-                <div className="flex items-center gap-2.5 text-sm text-[#434655]">
-                  <UserCheck className="w-4 h-4 text-[#737686] shrink-0" />
-                  <span>Faculty Advisor: {student.advisor}</span>
+                <div className="flex items-center gap-2.5 text-sm text-[#3d5248]">
+                  <UserCheck className="w-4 h-4 text-[#6b8578] shrink-0" />
+                  <span>Faculty Mentor: {student.advisor}</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#e2e8f0] space-y-4">
+              <div className="pt-4 border-t border-[#d5e2db] space-y-4">
                 <div>
-                  <div className="flex items-center justify-between text-xs font-semibold text-[#0b1c30] mb-2">
-                    <span>Degree Credit Progress</span>
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#12261f] mb-2">
+                    <span>Credit Progress</span>
                     <span className="font-mono tabular-nums">
                       {student.creditsEarned} / {student.creditsTarget} credits ({creditPct}%)
                     </span>
                   </div>
-                  <div className="h-2 rounded-full bg-[#eff4ff] overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#e7f0eb] overflow-hidden">
                     <div
-                      className="h-full bg-[#2563eb] rounded-full transition-all duration-300"
+                      className="h-full bg-[#0b6b4c] rounded-full transition-all duration-300"
                       style={{ width: `${creditPct}%` }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between text-xs font-semibold text-[#0b1c30] mb-2">
-                    <span>Term Attendance Rate</span>
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#12261f] mb-2">
+                    <span>Attendance Rate</span>
                     <span className="font-mono tabular-nums">
                       {student.attendanceRate.toFixed(1)}%
                     </span>
                   </div>
-                  <div className="h-2 rounded-full bg-[#eff4ff] overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#e7f0eb] overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${
                         student.attendanceRate >= 90
@@ -143,12 +152,12 @@ export function StudentDetailDrawer({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#e2e8f0]">
+              <div className="pt-4 border-t border-[#d5e2db]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-[#434655]" />
-                    <span className="text-sm font-medium text-[#0b1c30]">
-                      Open Bursar Balance
+                    <CreditCard className="w-4 h-4 text-[#3d5248]" />
+                    <span className="text-sm font-medium text-[#12261f]">
+                      Outstanding Fee
                     </span>
                   </div>
                   <span
@@ -158,29 +167,29 @@ export function StudentDetailDrawer({
                         : 'text-[#be123c]'
                     }`}
                   >
-                    ${student.tuitionBalance.toLocaleString()}
+                    {formatINR(student.tuitionBalance)}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 border-t border-[#e2e8f0] bg-[#f8f9ff] space-y-2.5">
+            <div className="p-6 border-t border-[#d5e2db] bg-[#f2f6f4] space-y-2.5">
               <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={() => onUpdateStatus(student.id, 'Enrolled')}
                   disabled={student.status === 'Enrolled'}
-                  className="h-10 px-3 rounded-lg bg-[#2563eb] text-xs font-semibold text-white hover:bg-[#1d4ed8] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                  className="h-10 px-3 rounded-lg bg-[#0b6b4c] text-xs font-semibold text-white hover:bg-[#095a40] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                 >
-                  Approve Enrollment
+                  Confirm Admission
                 </button>
                 <button
                   type="button"
                   onClick={() => onUpdateStatus(student.id, 'At-Risk')}
                   disabled={student.status === 'At-Risk'}
-                  className="h-10 px-3 rounded-lg border border-[#e2e8f0] bg-white text-xs font-semibold text-[#be123c] hover:bg-[#f43f5e]/5 disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                  className="h-10 px-3 rounded-lg border border-[#d5e2db] bg-white text-xs font-semibold text-[#be123c] hover:bg-[#f43f5e]/5 disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                 >
-                  Flag Academic Review
+                  Flag for Review
                 </button>
               </div>
               {student.tuitionBalance > 0 && (
@@ -189,7 +198,7 @@ export function StudentDetailDrawer({
                   onClick={() => onClearBalance(student.id)}
                   className="w-full h-10 px-4 rounded-lg border border-[#10b981]/30 bg-[#10b981]/10 text-xs font-semibold text-[#047857] hover:bg-[#10b981]/18 transition-colors whitespace-nowrap"
                 >
-                  Record Full Tuition Settlement (${student.tuitionBalance.toLocaleString()})
+                  Record Full Fee Settlement ({formatINR(student.tuitionBalance)})
                 </button>
               )}
             </div>

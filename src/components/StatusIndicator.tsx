@@ -38,8 +38,8 @@ const STATUS_STYLE: Record<
     Icon: CheckCircle2,
   },
   Enrolled: {
-    bg: 'bg-[#0ea5e9]/12',
-    text: 'text-[#0369a1]',
+    bg: 'bg-[#0b6b4c]/12',
+    text: 'text-[#0a5c40]',
     Icon: ShieldCheck,
   },
   Pending: {
