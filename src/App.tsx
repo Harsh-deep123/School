@@ -654,8 +654,9 @@ export default function App() {
                   {loadError}
                 </p>
                 <p className="text-xs text-[#6b8578] mt-3">
-                  Run <code className="font-mono">npm run serve</code> so both
-                  the API (port 3001) and UI (port 3000) start together.
+                  Run <code className="font-mono">npm run serve</code> with
+                  MySQL running, and set <code className="font-mono">MYSQL_PASSWORD</code> in{' '}
+                  <code className="font-mono">.env</code>.
                 </p>
               </div>
             ) : (
